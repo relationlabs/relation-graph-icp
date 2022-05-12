@@ -1,4 +1,99 @@
+# **Relation Graph Developer Docs**
+
+Dapp developers can deploy their own Relation Graph on the chain as a data storage service on the chain, and Dapp access Relation Graph for data storage and query..
+
+![](./images/2022-04-05-20-39-53.png)
+
+We provide compiled wasm packages that developers can deploy directly on Internet Computer (IC). The Relation Graph SDK will be provided in the future to help Dapp developers better access Relation Graph services.
+
+
+
+## Quick Start
+
+
+We will demonstrate how to deploy IC Grph on Internet Computer (IC).
+
++ Install dfinity SDK on **Ubuntu system (version 20.04)** or **Mac system**, it is recommended to switch to **root user** and execute the following commands
+    ```sh
+    sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+
+    # check
+    dfx  --version
+    ```
++ Create a demo project
+    ~~~sh
+    dfx new --type=rust ic_graph_demo
+    ~~~
++ Download the wasm package of ic_graph and the compressed file of the did file, decompress it and put it in the project root directory
+    ~~~sh
+        cd ic_graph_demo/
+        curl -LJO https://storageapi.fleek.co/shadow-001-team-bucket/relationlabs/ic_graph.zip
+        unzip ic_graph.zip
+    ~~~
++ Find the dfx.json file in the project root directory, and replace the content of canisters with the following content
+    ~~~json
+        "canisters": {
+            "ic_graph": {
+                "type": "custom",
+                "wasm": "ic_graph.wasm",
+                "candid": "ic_graph.did"
+            }
+        }
+    ~~~
+    ![](./images/2022-03-28-18-42-36.png)
++ Start dfx environment 
+    ~~~sh
+    dfx start --clean --background
+    ~~~
+
+    If you see the following information, it means the correct startup is successful:
+    ![](./images/2022-03-27-11-30-50.png)
++ Start project
+    ~~~sh
+    dfx deploy --no-wallet ic_graph
+    ~~~
+
+    If you see the following information, it means the correct startup is successful:
+    ![](./images/2022-03-27-11-58-48.png)
+
++ Store data
+    Call the sparql_update method of ic_graph to store a user information
+  ~~~sh
+	dfx canister   call ic_graph sparql_update '("  
+		INSERT DATA
+		{ 
+			:P1024 :name \"GraphDB\" ;
+				:gender \"Male\" ;
+				:age 30 ;
+				:birthdate \"1992-03-19\"^^xsd:date ;
+				:friends :P1 .
+		}
+	")'
+  ~~~
+  After the call is successful, SUCESS information will be returned:
+  ![](./images/2022-03-28-18-44-53.png)
+
++ Query data
+   Call the sparql_query method of ic_graph to query all user information
+  ~~~sh
+	dfx canister   call ic_graph sparql_query '("tsv","
+		SELECT * 
+		WHERE {
+			?s :name ?name;
+				:age ?age ;
+				:gender ?gender ;
+				:birthdate ?birthdate.
+		} 
+	")'
+  ~~~
+  The call is successful and will return the data we just inserted:
+  ![](./images/2022-03-28-18-46-58.png)
+
+
+
 # Relation Graph API
+
+
 
 ## 1. API overview
 
