@@ -1,31 +1,31 @@
-# 快速开始
+# Quick Start
 
-接下来，我们将在本地部署一个Relatioin Graph的服务
+Now, we will deploy Relation Graph service locally.
 
-## 部署本地服务
+## Deploy the local service
 
-1. 安装dfinity的SDK
+1. Install Dfinity SDK
 
-    在**Ubuntu系统(20.04版本)**或**Mac系统**上安装dfinity的SDK, 建议切换成**root用户**执行以下命令
+    Install Dfinity SDK on **Ubuntu Linux (20.04)** or **MacOS**, we recommend that you switch to the **root** user to execute the following command:
     ```sh
     sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 
-    # 检查是否安装成功
+    # check if it is installed correctly
     dfx  --version
     ```
-2. 创建一个demo工程
+2. Create a demo project
     ~~~sh
     dfx new --type=rust relation_graph_demo
     ~~~
-3. 配置relation wasm包
+3. Configure the wasm package of Relation
    
-   + 下载relation_graph 的wasm包以及did文件 的压缩文件，解压后放到项目根目录下
+   + Download the compressed file containing the wasm package and did file of relation_graph, unzip it, and then place it under the root directory of the project.
         ~~~sh
             cd relation_graph_demo/
             curl -LJO https://storageapi2.fleek.co/shadow-001-team-bucket/relationlabs/relation_graph_with_acl.zip
             unzip relation_graph_with_acl.zip
         ~~~
-   + 在项目根目录下找到dfx.json文件，其中canisters的内容替换成下面的内容
+   + Locate dfx.json under the root directory of the project, then replace the content in the "canister" section with the following:
         ~~~json
             "canisters": {
                 "relation_graph": {
@@ -35,26 +35,26 @@
                 }
             }
         ~~~
-4. 启动relation_graph项目
-   + 开启dfx环境 
+4. Start the relation_graph project
+   + Start the dfx environment
         ~~~sh
         dfx start --clean --background
         ~~~
 
-        如果看到以下信息，则说明正确启动成功
-        ![](../images/2022-03-27-11-30-50.png)
-   + 启动项目
+        On success, you will see the information below:
+        ![](./images/2022-03-27-11-30-50.png)
+   + Start the project
        ~~~sh
        dfx deploy --no-wallet relation_graph
        ~~~
 
-       如果看到以下信息，则说明项目启动成功
-       ![](../images/2022-03-27-11-58-48.png)
+       On success, you will see the information below:
+       ![](./images/2022-03-27-11-58-48.png)
 
-5. 调用服务接口
+5. Call the interface of the service
 
-   + 存储数据
-    调用Relation Graph的 sparql_update方法，存储一个用户信息
+   + Store data
+    Call the sparql_update of Relation Graph to store a user's information
         ~~~sh
             dfx canister   call relation_graph sparql_update '("  
                 INSERT DATA
@@ -67,11 +67,11 @@
                 }
             ")'
         ~~~
-        调用成功后，将返回SUCESS信息：
-        ![](../images/2022-03-28-18-44-53.png)
+        On success, a "SUCCESS" message will return:
+        ![](./images/2022-03-28-18-44-53.png)
 
-   + 查询数据
-      调用Relation Graph的 sparql_query方法，查询所有用户信息
+   + Query data
+      Call the sparql_query method of Relation Graph to query all the users' information
      ~~~sh
         dfx canister   call relation_graph sparql_query '("tsv","
             SELECT * 
@@ -83,18 +83,18 @@
             } 
         ")'
      ~~~
-     调用成功，将返回上面插入的数据：
-     ![](../images/2022-03-28-18-46-58.png)
+     On success, it will return the record inserted above.
+     ![](./images/2022-03-28-18-46-58.png)
 
     
-    至此，我们已经快速在本地搭建部署了Relation Graph服务，并通过接口进行数据的存储和查询。
+    So far, we have quickly deployed a Relation Graph service locally and conducted data storage and query tasks via interfaces.
 
 
-## 部署至IC主网
+## Deploy on the IC mainnet
 
-如果我们需要在IC的主网上部署一个Relation Graph，可以接着本地部署步骤后面做如下操作：
+After finishing the local deployment in the step above, if we need to deploy a Relation Graph on IC's mainnet, we can continue with the following:
 
-1. 在主网上创建canister
+1. Create a canister on the mainnet
    
    ```sh
     # query your principal 
@@ -106,9 +106,9 @@
     
    ```
 
-2. 配置canister_ids.json
+2. Configure canister_ids.json
    
-   在项目根目录下增加canister_ids.json文件，内容如下：
+   Create a canister_ids.json under the root directory of the project with the following content：
    ```json
     {
         "relation_graph": {
@@ -116,19 +116,19 @@
         }
     }
    ```
-   ![](../images/2022-04-15-16-10-50.png)
+   ![](./images/2022-04-15-16-10-50.png)
 
-3. 部署命令
+3. Deploy
 
     ```sh
     dfx deploy --network ic --no-wallet relation_graph
     ```
 
-4. 调用主网的Relation Graph
+4. Call the Relation Graph on the mainnet
 
-    在dfx canister命令后加上 --network ic  ,申明访问主网canister接口
+    attach --network ic parameter after the command "dfx canister" to specify accessing the canister interface on the mainnet.
 
-   + 存储数据
+   + Store data
         ~~~sh
             dfx canister --network ic  call relation_graph sparql_update '("  
                 INSERT DATA
@@ -143,7 +143,7 @@
         ~~~
 
 
-   + 查询数据
+   + Query data
      ~~~sh
         dfx canister  --network ic  call relation_graph sparql_query '("tsv","
             SELECT * 
@@ -157,6 +157,6 @@
      ~~~
 
 
-## 视频演示
+## Video Demo
 
 <iframe width="760" height="515" src="https://www.youtube.com/embed/N2Zx3WfqX_g" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
