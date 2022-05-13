@@ -1,31 +1,35 @@
-# Relation Graph Demo  
+#  Best Practice
+
+With Relation Graph, we can quickly develop basic applications such as contact lists or cloud notes.
+
+## Demo for using graph data
 
 
-We will demonstrate on the local console how to use the sparql_update interface and sparql_query interface provided by Relation Graph to implement user information management and user friend data management.
+We will demonstrate, on a local console, how to use two interfaces provided by Relation Graph, namely sparql_update and sparql_query, to manage user information and list of friends.
 
-## 1. Grant ACL 
+### ACL authorization
 
-+ Authorize the user
++ Authorize a user
     ```sh
     dfx canister call ic_graph acl_grant '("g4lfy-u4kk4-vlixd-jufrl-7x2ro-myhu2-ptpz3-lx4vu-u5ruj-ohwvl-hqe","user")'
 
     ```
-    The authorization is successful and SUCCESS is returned:
-    ![](../images/2022-03-30-10-47-52.png)
+    On success, "SUCCESS" will be returned:
+    ![](./images/2022-03-30-10-47-52.png)
 
-+ Query the authorization list
++ Query authorized list
     ```sh
     dfx canister call ic_graph acl_show '(10)'
 
     ```
-    The query results are as follows, the following two users can perform the sparql_update operation:
-    ![](../images/2022-03-30-10-50-35.png)
+    The result returns as follows. The two users below can perform the sparql_update operation.
+    ![](./images/2022-03-30-10-50-35.png)
 
 
 
-## 2. Insert user's information
+### Add new users
 
-+ Three users are saved, including attribute data for the users. Friendship of three users： P1001 --> P1002 <--> P1003
++ Add three new users and their property data. The relations among the three are as follows: P1001 --> P1002 <--> P1003
     ```sh
     dfx canister  call ic_graph sparql_update '("  
         INSERT DATA
@@ -61,9 +65,9 @@ We will demonstrate on the local console how to use the sparql_update interface 
     ")'
 
     ```
-    If the execution is successful, a "SUCCESS" prompt will be returned
+    On success, "SUCCESS" will be returned
 
-  + Query  results
++ Query the data saved in the step above
 
     ~~~sh
     dfx canister call ic_graph sparql_query '("tsv","
@@ -77,14 +81,14 @@ We will demonstrate on the local console how to use the sparql_update interface 
         } 
     ")'
     ~~~
-    Query all user data in the current database:
-    ![](../images/2022-03-28-19-24-28.png)
+    Query current data of all users in the database
+    ![](./images/2022-03-28-19-24-28.png)
 
-## 3. Query user's information
+### Query the list of users
 
-In this example, we mainly demonstrate sorting, query number, multi-condition query:
+In this example to query the list of users，we will demonstrate sorting, setting the number of records to be queried, and querying with multiple conditions :
 
-+ Query data, sort the query results, and limit the number of query items:
++ Query the data, sort the result, and limit the number of records to be queried:
     ```sh
     dfx canister  call ic_graph sparql_query '("tsv","
         SELECT *
@@ -99,10 +103,10 @@ In this example, we mainly demonstrate sorting, query number, multi-condition qu
         limit 10
     ")'
     ```
-    Display the results in order of age:
-    ![](../images/2022-03-28-19-25-47.png)
+    Display and sort the result according to age:
+    ![](./images/2022-03-28-19-25-47.png)
 
-+ Query data, use multiple query conditions to filter:
++ Query data and filter the result with multiple query conditions:
     ```sh
     dfx canister  call ic_graph sparql_query '("tsv","
         SELECT *
@@ -119,10 +123,10 @@ In this example, we mainly demonstrate sorting, query number, multi-condition qu
         limit 10
     ")'
     ```
-    Query only the results of users whose name is Chris and age>=40:
-    ![](../images/2022-03-28-19-26-34.png)
+    Only query the results where the name is Chris and the age<=40:
+    ![](./images/2022-03-28-19-26-34.png)
 
-+ Fuzzy Enquiry：
++ Fuzzy query:
     ```sh
     dfx canister   call ic_graph sparql_query '("tsv","
         SELECT *
@@ -138,15 +142,15 @@ In this example, we mainly demonstrate sorting, query number, multi-condition qu
         limit 10
     ")'
     ```
-    User results with the letter i in the name：
-    ![](../images/2022-03-28-19-27-11.png)
+    Results of users whose name contain the letter "i":
+    ![](./images/2022-03-28-19-27-11.png)
 
 
-## Query user's friend list
+### Query the list of friends
 
-In this example, we mainly demonstrate  query one-degree relationship, and query second-degree relationship：
+In this example to query the list of friends, we focus on querying first degree and second degree relations.
 
-+ Query a user's friend list
++ Query a user's list of friends
 
   ~~~sh
     dfx canister   call ic_graph sparql_query '("tsv","
@@ -162,7 +166,7 @@ In this example, we mainly demonstrate  query one-degree relationship, and query
     ")'
   ~~~
 
-+ Query a user's second-degree friend relationship (friend's friend list), and deduplicate the results
++ Query a user's list of friends that satisfy second degree relations (the friends of friends), and perform duplicate elimination on the result.
 
     ~~~sh
     dfx canister  call ic_graph sparql_query '("tsv","
@@ -178,12 +182,12 @@ In this example, we mainly demonstrate  query one-degree relationship, and query
         LIMIT 10
     ")'
     ~~~
-    The second friend of P1001 is P1003, so the query will return the data of P1003:
-    ![](../images/2022-03-28-19-14-07.png)
+    Since P1001's second degree friend is P1003, so P1003's data will be returned:
+    ![](./images/2022-03-28-19-14-07.png)
 
 
 
-## 4. Update user's information
+### Modify a user's information
 
 + Modify a user's age
 
@@ -198,7 +202,7 @@ In this example, we mainly demonstrate  query one-degree relationship, and query
     ")'
     ```
 
-+ Check the modified result
++ Check the result of the modification
 
     ~~~sh
     dfx canister  call ic_graph sparql_query '("tsv","
@@ -213,9 +217,9 @@ In this example, we mainly demonstrate  query one-degree relationship, and query
     ")'
     ~~~
 
-## 5. Deletion user
+### Delete a user
 
-+ Delete some attributes of P1001 user
++ Delete some of the properties of the user P1001
     ```sh
     dfx canister  call ic_graph sparql_update '("
         DELETE WHERE
@@ -226,7 +230,7 @@ In this example, we mainly demonstrate  query one-degree relationship, and query
     ")'
     ```
 
-+ Delete all attributes of P1003 user
++ Delete all of the properties of the user P1003
     ```sh
     dfx canister  call ic_graph sparql_update '("  
         DELETE WHERE
@@ -238,7 +242,7 @@ In this example, we mainly demonstrate  query one-degree relationship, and query
 
 
 
-+ Check delete results
++ Check the result of deletion
     ```sh
     dfx canister   call ic_graph sparql_query '("tsv","
         SELECT *
@@ -247,7 +251,6 @@ In this example, we mainly demonstrate  query one-degree relationship, and query
         }
     ")'
     ```
-    After the deletion is successful, the corresponding data will not be queried:
-    ![](../images/2022-03-28-19-12-51.png)
-
+    On success, the data will disappear from the query.
+    ![](./images/2022-03-28-19-12-51.png)
 
